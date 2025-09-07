@@ -13,8 +13,6 @@
 # limitations under the License.
 
 FROM golang:1.23.4-alpine AS builder
-ARG TARGETOS
-ARG TARGETARCH
 WORKDIR /src
 
 # restore dependencies
@@ -23,9 +21,7 @@ RUN go mod download
 
 COPY . .
 
-# Skaffold passes in debug-oriented compiler flags
-ARG SKAFFOLD_GO_GCFLAGS
-RUN GOOS=${TARGETOS} GOARCH=${TARGETARCH} CGO_ENABLED=0 go build -gcflags="${SKAFFOLD_GO_GCFLAGS}" -o /checkoutservice .
+RUN CGO_ENABLED=0 go build -o /checkoutservice .
 
 FROM scratch
 
